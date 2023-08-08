@@ -61,7 +61,15 @@ def logout():
 
 @bp.route('/expenses', methods=['GET', 'POST'])
 def expenses():
+    category_id = request.args.get('category_id')
     user_id = session.get('user_id')
+
+    if category_id:
+        user_expenses = Expense.query.filter_by(user_id=user_id, category_id=category_id).all()
+    else:
+        user_expenses = Expense.query.filter_by(user_id=user_id).all()
+
+    categories = Category.query.all()
 
     if request.method == 'POST':
         description = request.form['description']
@@ -77,6 +85,7 @@ def expenses():
     user_expenses = Expense.query.filter_by(user_id=user_id).all()
     categories = Category.query.all()
     return render_template('expenses.html', expenses=user_expenses, categories=categories)
+
 
 @bp.route('/expenses/edit/<int:expense_id>', methods=['GET', 'POST'])
 def edit_expense(expense_id):
