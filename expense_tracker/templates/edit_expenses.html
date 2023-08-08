@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Expense</title>
+</head>
+<body>
+    <h1>Edit Expense</h1>
+    <form action="{{ url_for('edit_expense', expense_id=expense.id) }}" method="post">
+        <!-- ... similar form fields as the 'expenses.html' ... -->
+    </form>
+    <a href="{{ url_for('expenses') }}">Back to Expenses</a>
+</body>
+</html>
