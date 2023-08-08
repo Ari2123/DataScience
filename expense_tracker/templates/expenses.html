@@ -2,37 +2,48 @@
 <html>
 <head>
     <title>Expenses</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>My Expenses</h1>
-    <form action="{{ url_for('expenses') }}" method="post">
-        <label for="description">Description:</label>
-        <input type="text" name="description" required>
-        <br>
-        <label for="amount">Amount:</label>
-        <input type="number" step="0.01" name="amount" required>
-        <br>
-        <label for="date">Date:</label>
-        <input type="date" name="date" required>
-        <br>
-        <label for="category_id">Category:</label>
-        <select name="category_id">
-            <option value="">No Category</option>
-            {% for category in categories %}
-            <option value="{{ category.id }}">{{ category.name }}</option>
+    <div class="container">
+        <h1 class="text-center mt-4">My Expenses</h1>
+        <form action="{{ url_for('expenses') }}" method="post" class="mb-4">
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" class="form-control" name="description" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="number" step="0.01" class="form-control" name="amount" required>
+            </div>
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" class="form-control" name="date" required>
+            </div>
+            <div class="form-group">
+                <label for="category_id">Category:</label>
+                <select class="form-control" name="category_id">
+                    <option value="">No Category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <input type="submit" class="btn btn-primary" value="Add Expense">
+        </form>
+        <h2>Expenses List</h2>
+        <ul>
+            {% for expense in expenses %}
+            <li>{{ expense.description }} - ${{ expense.amount }} ({{ expense.date.strftime('%Y-%m-%d') }})</li>
             {% endfor %}
-        </select>
+        </ul>
+        <a href="{{ url_for('export_expenses_csv') }}" class="btn btn-secondary">Export Expenses to CSV</a>
         <br>
-        <input type="submit" value="Add Expense">
-    </form>
-    <h2>Expenses List</h2>
-    <ul>
-        {% for expense in expenses %}
-        <li>{{ expense.description }} - ${{ expense.amount }} ({{ expense.date.strftime('%Y-%m-%d') }})</li>
-        {% endfor %}
-    </ul>
-    <a href="{{ url_for('export_expenses_csv') }}">Export Expenses to CSV</a> <!-- Added link to export expenses -->
-    <br>
-    <a href="{{ url_for('logout') }}">Logout</a>
+        <a href="{{ url_for('logout') }}" class="btn btn-danger mt-2">Logout</a>
+    </div>
 </body>
 </html>
+
