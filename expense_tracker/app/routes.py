@@ -93,3 +93,12 @@ def edit_expense(expense_id):
         return redirect(url_for('expenses'))
 
     return render_template('edit_expense.html', expense=expense, categories=categories)
+
+@bp.route('/expenses/delete/<int:expense_id>', methods=['POST'])
+def delete_expense(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+    db.session.delete(expense)
+    db.session.commit()
+    flash('Expense deleted successfully!', 'success')
+    return redirect(url_for('expenses'))
+
