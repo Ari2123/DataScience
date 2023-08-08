@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, Response
 from .models import Expense, db, User, Category
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
+import csv
 
 bp = Blueprint('main', __name__)
 
@@ -111,3 +112,19 @@ def delete_expense(expense_id):
     flash('Expense deleted successfully!', 'success')
     return redirect(url_for('expenses'))
 
+@bp.route('/expenses/export/csv', methods=['GET'])
+def export_expenses_csv():
+    user_id = session.get('user_id')
+    user_expenses = Expense.query.filter_by(user_id=user_id).all()
+
+    def generate():
+        data = [["Description", "Amount", "Date", "Category"]]
+        for expense in user_expenses:
+            category_name = expense.category.name if expense.category else "No Category"
+            data.append([expense.description, expense.amount, expense.date.strftime('%Y-%m-%d'), category_name])
+
+        writer = csv.writer(Response(mimetype='text/csv'))
+        for row in data:
+            yield ','.join(row) + '\n'
+
+    return Response(generate(), mimetype='text/csv', headers={'Content-Disposition': 'attachment; filename=expenses.csv'})
