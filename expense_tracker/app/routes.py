@@ -52,5 +52,10 @@ def login():
 
     return render_template('login.html')
 
+@bp.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    flash('You have been logged out', 'success')
+    return redirect(url_for('login'))
 
 
