@@ -1,14 +1,9 @@
-from app import db
-from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
 
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    # other fields
+db = SQLAlchemy()
 
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    # other fields
+    description = db.Column(db.String(100), nullable=False)
+    amount = db.Column(db.Float, nullable=False)
 
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    # other fields
