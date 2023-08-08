@@ -1,4 +1,4 @@
-pip install pytest
+from expense_functions import calculate_total_expenses, add_expense, get_expense, validate_date, get_category_by_id, update_expense, register_user, login_user
 
 def test_calculate_total_expenses():
     expenses = [100, 200, 300]
