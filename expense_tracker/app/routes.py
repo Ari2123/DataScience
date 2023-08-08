@@ -78,3 +78,18 @@ def expenses():
     categories = Category.query.all()
     return render_template('expenses.html', expenses=user_expenses, categories=categories)
 
+@bp.route('/expenses/edit/<int:expense_id>', methods=['GET', 'POST'])
+def edit_expense(expense_id):
+    expense = Expense.query.get_or_404(expense_id)
+    categories = Category.query.all()
+
+    if request.method == 'POST':
+        expense.description = request.form['description']
+        expense.amount = float(request.form['amount'])
+        expense.date = datetime.strptime(request.form['date'], '%Y-%m-%d')
+        expense.category_id = request.form.get('category_id')
+        db.session.commit()
+        flash('Expense updated successfully!', 'success')
+        return redirect(url_for('expenses'))
+
+    return render_template('edit_expense.html', expense=expense, categories=categories)
