@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import csv
 from functools import wraps
+from . import app
 
 bp = Blueprint('main', __name__)
 
@@ -18,11 +19,7 @@ def login_required(f):
 
 @bp.route('/')
 def home():
-    expenses = Expense.query.all()
-    template_path = os.path.abspath("templates/home.html")
-    print(f"Template path: {template_path}")  # This should print the absolute path to your terminal
-
-    return render_template(template_path, expenses=expenses)
+    return render_template('home.html')
 
 @bp.route('/add_expense', methods=['POST'])
 @login_required
