@@ -19,7 +19,10 @@ def login_required(f):
 @bp.route('/')
 def home():
     expenses = Expense.query.all()
-    return render_template('home.html', expenses=expenses)
+    template_path = os.path.abspath("templates/home.html")
+    print(f"Template path: {template_path}")  # This should print the absolute path to your terminal
+
+    return render_template(template_path, expenses=expenses)
 
 @bp.route('/add_expense', methods=['POST'])
 @login_required
