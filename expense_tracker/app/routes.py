@@ -3,8 +3,18 @@ from .models import Expense, db, User, Category
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import csv
+from functools import wraps
 
 bp = Blueprint('main', __name__)
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Please login to continue.', 'warning')
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 @bp.route('/')
 def home():
@@ -12,6 +22,7 @@ def home():
     return render_template('home.html', expenses=expenses)
 
 @bp.route('/add_expense', methods=['POST'])
+@login_required
 def add_expense():
     description = request.form['description']
     amount = request.form['amount']
@@ -48,19 +59,21 @@ def login():
         if user and check_password_hash(user.password_hash, password):
             session['user_id'] = user.id
             flash('Login successful!', 'success')
-            return redirect(url_for('index'))  # Redirect to the main page
+            return redirect(url_for('main.home'))  # Redirect to the main page
         else:
             flash('Invalid username or password', 'error')
 
     return render_template('login.html')
 
 @bp.route('/logout')
+@login_required
 def logout():
     session.pop('user_id', None)
     flash('You have been logged out', 'success')
     return redirect(url_for('login'))
 
 @bp.route('/expenses', methods=['GET', 'POST'])
+@login_required
 def expenses():
     category_id = request.args.get('category_id')
     user_id = session.get('user_id')
@@ -87,8 +100,8 @@ def expenses():
     categories = Category.query.all()
     return render_template('expenses.html', expenses=user_expenses, categories=categories)
 
-
 @bp.route('/expenses/edit/<int:expense_id>', methods=['GET', 'POST'])
+@login_required
 def edit_expense(expense_id):
     expense = Expense.query.get_or_404(expense_id)
     categories = Category.query.all()
@@ -105,6 +118,7 @@ def edit_expense(expense_id):
     return render_template('edit_expense.html', expense=expense, categories=categories)
 
 @bp.route('/expenses/delete/<int:expense_id>', methods=['POST'])
+@login_required
 def delete_expense(expense_id):
     expense = Expense.query.get_or_404(expense_id)
     db.session.delete(expense)
@@ -113,6 +127,7 @@ def delete_expense(expense_id):
     return redirect(url_for('expenses'))
 
 @bp.route('/expenses/export/csv', methods=['GET'])
+@login_required
 def export_expenses_csv():
     user_id = session.get('user_id')
     user_expenses = Expense.query.filter_by(user_id=user_id).all()
@@ -128,3 +143,4 @@ def export_expenses_csv():
             yield ','.join(row) + '\n'
 
     return Response(generate(), mimetype='text/csv', headers={'Content-Disposition': 'attachment; filename=expenses.csv'})
+
