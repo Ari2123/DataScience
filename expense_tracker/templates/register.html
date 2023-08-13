@@ -2,40 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <title>Register</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <h1 class="text-center">Register</h1>
-                <form action="{{ url_for('register') }}" method="post">
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" name="username" class="form-control" required>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <h1 class="text-center">Register</h1>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-danger">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
                     </div>
-                    <div class="form-group">
-                        <label for="email">Email:</label>
-                        <input type="email" name="email" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" name="password" class="form-control" required>
-                    </div>
-                    <input type="submit" value="Register" class="btn btn-primary btn-block">
-                </form>
-                <div class="text-center mt-3">
-                    <a href="{{ url_for('login') }}">Already have an account? Log in here</a>
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('register') }}" method="post">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" class="form-control" required>
                 </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <input type="submit" value="Register" class="btn btn-primary btn-block">
+            </form>
+
+            <div class="text-center mt-3">
+                <a href="{{ url_for('login') }}">Already have an account? Log in here</a>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
 </body>
 </html>
 
