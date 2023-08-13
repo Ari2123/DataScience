@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder='templates')
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'a_default_fallback_key'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expense_tracker.db'
     
