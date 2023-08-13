@@ -1,1 +1,1 @@
-web: gunicorn app:expense-tracking
+web: gunicorn app:app
