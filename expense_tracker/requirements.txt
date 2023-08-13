@@ -1,4 +1,6 @@
 Flask
 Flask-SQLAlchemy
-python-dotenv==1.0.0
+werkzeug
 gunicorn
+python-dotenv==1.0.0
+psycopg2-binary  # If you're using PostgreSQL
