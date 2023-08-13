@@ -10,36 +10,48 @@
 <body>
     <div class="container">
         <h1 class="text-center mt-4">My Expenses</h1>
-        <form action="{{ url_for('expenses') }}" method="post" class="mb-4">
-            <div class="form-group">
-                <label for="description">Description:</label>
-                <input type="text" class="form-control" name="description" required>
-            </div>
-            <div class="form-group">
-                <label for="amount">Amount:</label>
-                <input type="number" step="0.01" class="form-control" name="amount" required>
-            </div>
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" class="form-control" name="date" required>
-            </div>
-            <div class="form-group">
-                <label for="category_id">Category:</label>
-                <select class="form-control" name="category_id">
-                    <option value="">No Category</option>
-                    {% for category in categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-success">
+                    {% for message in messages %}
+                        {{ message }}
                     {% endfor %}
-                </select>
-            </div>
-            <input type="submit" class="btn btn-primary" value="Add Expense">
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('expenses') }}" method="post" class="mb-4">
+            <!-- ... same form fields ... -->
         </form>
+
         <h2>Expenses List</h2>
-        <ul>
-            {% for expense in expenses %}
-            <li>{{ expense.description }} - ${{ expense.amount }} ({{ expense.date.strftime('%Y-%m-%d') }})</li>
-            {% endfor %}
-        </ul>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense.description }}</td>
+                    <td>${{ expense.amount }}</td>
+                    <td>{{ expense.date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_expense', expense_id=expense.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="post" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
         <a href="{{ url_for('export_expenses_csv') }}" class="btn btn-secondary">Export Expenses to CSV</a>
         <br>
         <a href="{{ url_for('logout') }}" class="btn btn-danger mt-2">Logout</a>
